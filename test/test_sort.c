@@ -25,6 +25,13 @@ START_TEST(test_bubble_sort)
 }
 END_TEST
 
+START_TEST(test_selection_sort)
+{
+	soto_selection_sort_int(arr, ARRSIZE);
+	ck_assert(arr[_i] == sorted[_i]);
+}
+END_TEST
+
 Suite * sort_suite(void)
 {
 	Suite *s;
@@ -36,6 +43,7 @@ Suite * sort_suite(void)
 	tcase_add_checked_fixture(tc_core, setup, teardown);
 
 	tcase_add_loop_test(tc_core, test_bubble_sort, 0, ARRSIZE);
+	tcase_add_loop_test(tc_core, test_selection_sort, 0, ARRSIZE);
 
 	suite_add_tcase(s, tc_core);
 
