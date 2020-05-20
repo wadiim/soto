@@ -47,4 +47,19 @@ void SOTO_TEMPLATE(soto_selection_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
 	}
 }
 
+void SOTO_TEMPLATE(soto_insertion_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
+{
+	for (size_t i = 1; i < len; ++i)
+	{
+		SOTO_TYPE key = arr[i];
+		size_t j = i;
+		while (j > 0 && arr[j-1] > key)
+		{
+			arr[j] = arr[j-1];
+			--j;
+		}
+		arr[j] = key;
+	}
+}
+
 #endif // SOTO_TYPE
