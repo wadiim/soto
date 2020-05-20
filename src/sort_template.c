@@ -2,6 +2,7 @@
 
 #include "soto/soto.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
 void SOTO_TEMPLATE(swap,SOTO_TYPE)(SOTO_TYPE *x, SOTO_TYPE *y)
 {
@@ -60,6 +61,39 @@ void SOTO_TEMPLATE(soto_insertion_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
 		}
 		arr[j] = key;
 	}
+}
+
+void SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
+{
+	if (len <= 1) return;
+	SOTO_TYPE pivot = arr[0];
+	SOTO_TYPE *arr1 = malloc((len-1)*sizeof(SOTO_TYPE));
+	SOTO_TYPE *arr2 = malloc((len-1)*sizeof(SOTO_TYPE));
+	size_t i, i1 = 0, i2 = 0;
+	for (i = 1; i < len; ++i)
+	{
+		if (arr[i] <= pivot)
+		{
+			arr1[i1++] = arr[i];
+		}
+		else
+		{
+			arr2[i2++] = arr[i];
+		}
+	}
+	SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(arr1, i1);
+	SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(arr2, i2);
+	for (i = 0; i < i1; ++i)
+	{
+		arr[i] = arr1[i];
+	}
+	arr[i] = pivot;
+	for (i = i1+1; i < len; ++i)
+	{
+		arr[i] = arr2[i-i1-1];
+	}
+	free(arr2);
+	free(arr1);
 }
 
 #endif // SOTO_TYPE
