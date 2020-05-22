@@ -240,6 +240,27 @@ START_TEST(test_list_node_at_with_the_inner_positon)
 }
 END_TEST
 
+START_TEST(test_list_at_with_the_inner_pos)
+{
+	push_back_values(4, "foo", "bar", "baz", "qux");
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), "baz");
+}
+END_TEST
+
+START_TEST(test_list_at_with_the_first_pos)
+{
+	push_back_values(4, "foo", "bar", "baz", "qux");
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), "foo");
+}
+END_TEST
+
+START_TEST(test_list_at_with_the_last_pos)
+{
+	push_back_values(4, "foo", "bar", "baz", "qux");
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 3), "qux");
+}
+END_TEST
+
 START_TEST(test_list_insert_at_the_beginning)
 {
 	push_back_values(4, "foo", "bar", "baz", "qux");
@@ -339,6 +360,9 @@ Suite * list_suite(void)
 	tcase_add_test(tc_core, test_list_node_at_with_the_first_position);
 	tcase_add_test(tc_core, test_list_node_at_with_the_first_position);
 	tcase_add_test(tc_core, test_list_node_at_with_the_inner_positon);
+	tcase_add_test(tc_core, test_list_at_with_the_inner_pos);
+	tcase_add_test(tc_core, test_list_at_with_the_first_pos);
+	tcase_add_test(tc_core, test_list_at_with_the_last_pos);
 	tcase_add_test(tc_core, test_list_insert_at_the_beginning);
 	tcase_add_test(tc_core, test_list_insert_at_the_end);
 	tcase_add_test(tc_core, test_list_insert_in_the_middle);

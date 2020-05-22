@@ -88,6 +88,14 @@ SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) * SOTO_TEMPLATE(
 	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list, size_t pos);
 
 /*
+ * Get the value of the node at the specified position.
+ * Runtime error occurs if the selected position is past the end of the list
+ * or the list provided is empty.
+ */
+SOTO_TYPE SOTO_TEMPLATE(soto_list_at,SOTO_TYPE)(
+	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list, size_t pos);
+
+/*
  * Insert a node with the specified value before the selected position.
  */
 void SOTO_TEMPLATE(soto_list_insert,SOTO_TYPE)(

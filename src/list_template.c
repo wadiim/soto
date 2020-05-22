@@ -157,6 +157,13 @@ SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) * SOTO_TEMPLATE(
 	return (i == pos) ? node : NULL;
 }
 
+SOTO_TYPE SOTO_TEMPLATE(soto_list_at,SOTO_TYPE)(
+	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list, size_t pos)
+{
+	// Allow for runtime error if 'soto_list_node_at' returns NULL.
+	return SOTO_TEMPLATE(soto_list_node_at,SOTO_TYPE)(list, pos)->data;
+}
+
 void SOTO_TEMPLATE(soto_list_insert,SOTO_TYPE)(
 	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list, size_t pos, SOTO_TYPE value)
 {
