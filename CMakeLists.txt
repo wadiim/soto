@@ -8,6 +8,8 @@ include(GNUInstallDirs)
 add_library(${PROJECT_NAME} STATIC
 	${CMAKE_SOURCE_DIR}/src/sort_template.c
 	${CMAKE_SOURCE_DIR}/src/sort.c
+	${CMAKE_SOURCE_DIR}/src/list_template.c
+	${CMAKE_SOURCE_DIR}/src/list.c
 )
 
 target_include_directories(${PROJECT_NAME}
