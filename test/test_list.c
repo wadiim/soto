@@ -4,32 +4,12 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
+#define VAL1 "foo"
+#define VAL2 "bar"
+#define VAL3 "baz"
+#define VAL4 "qux"
+
 soto_list_char_ptr *list;
-
-void fill_list(void)
-{
-	soto_list_node_char_ptr *front =
-		malloc(sizeof(soto_list_node_char_ptr));
-	soto_list_node_char_ptr *back =
-		malloc(sizeof(soto_list_node_char_ptr));
-	list->front = front;
-	list->back = back;
-	list->front->next = list->back;
-	list->front->prev = NULL;
-	list->back->next = NULL;
-	list->back->prev = list->front;
-}
-
-void push_back_values(int count, ...)
-{
-	va_list args;
-	va_start(args, count);
-	for (int i = 0; i < count; ++i)
-	{
-		soto_list_push_back_char_ptr(list, va_arg(args, char*));
-	}
-	va_end(args);
-}
 
 void test_list_integrity(soto_list_char_ptr *l)
 {
@@ -42,6 +22,18 @@ void test_list_integrity(soto_list_char_ptr *l)
 		prev = curr;
 		curr = curr->next;
 	}
+}
+
+void generate_nodes(soto_list_char_ptr* l)
+{
+	soto_list_push_back_char_ptr(l, VAL1);
+	test_list_integrity(l);
+	soto_list_push_back_char_ptr(l, VAL2);
+	test_list_integrity(l);
+	soto_list_push_back_char_ptr(l, VAL3);
+	test_list_integrity(l);
+	soto_list_push_back_char_ptr(l, VAL4);
+	test_list_integrity(l);
 }
 
 void setup(void)
@@ -69,261 +61,278 @@ START_TEST(test_list_free)
 }
 END_TEST
 
-START_TEST(test_list_empty_with_empty_list)
+START_TEST(test_list_empty)
 {
+	// Test soto_list_empty with an empty list.
 	ck_assert(soto_list_empty_char_ptr(list) == true);
-}
-END_TEST
 
-START_TEST(test_list_empty_with_non_empty_list)
-{
-	soto_list_node_char_ptr *node = malloc(sizeof(soto_list_node_char_ptr));
-	node->next = node->prev = NULL;
-	list->front = list->back = node;
+	generate_nodes(list);
+
+	// Test soto_list_empty with a non-empty list.
 	ck_assert(soto_list_empty_char_ptr(list) == false);
 }
 END_TEST
 
-START_TEST(test_list_push_back_with_empty_list)
+START_TEST(test_list_push_back)
 {
-	soto_list_push_back_char_ptr(list, "Hello world!");
-	ck_assert_str_eq(list->back->data, "Hello world!");
-	ck_assert_ptr_eq(list->back, list->front);
-	ck_assert_ptr_null(list->back->prev);
-	ck_assert_ptr_null(list->back->next);
+	generate_nodes(list);
+
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL1);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL2);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), VAL3);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 3), VAL4);
 }
 END_TEST
 
-START_TEST(test_list_push_back_with_non_empty_list)
+START_TEST(test_list_push_front)
 {
-	fill_list();
-	soto_list_push_back_char_ptr(list, "Hello world!");
-	ck_assert_str_eq(list->back->data, "Hello world!");
-	ck_assert_ptr_eq(list->back->prev->next, list->back);
-	ck_assert_ptr_null(list->back->next);
+	// Push front the first value.
+	soto_list_push_front_char_ptr(list, VAL1);
+	test_list_integrity(list);
+
+	// Push front the second value.
+	soto_list_push_front_char_ptr(list, VAL2);
+	test_list_integrity(list);
+
+	// Push front the third value.
+	soto_list_push_front_char_ptr(list, VAL3);
+	test_list_integrity(list);
+
+	// Push front the fourth value.
+	soto_list_push_front_char_ptr(list, VAL4);
+	test_list_integrity(list);
+
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL4);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL3);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), VAL2);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 3), VAL1);
 }
 END_TEST
 
-START_TEST(test_list_push_front_with_empty_list)
+START_TEST(test_list_size)
 {
-	soto_list_push_back_char_ptr(list, "Hello world!");
-	ck_assert_str_eq(list->front->data, "Hello world!");
-	ck_assert_ptr_eq(list->back, list->front);
-	ck_assert_ptr_null(list->front->prev);
-	ck_assert_ptr_null(list->front->next);
-}
-END_TEST
-
-START_TEST(test_list_push_front_with_non_empty_list)
-{
-	fill_list();
-	soto_list_push_front_char_ptr(list, "Hello world!");
-	ck_assert_str_eq(list->front->data, "Hello world!");
-	ck_assert_ptr_eq(list->front->next->prev, list->front);
-	ck_assert_ptr_null(list->front->prev);
-}
-END_TEST
-
-START_TEST(test_list_size_with_empty_list)
-{
+	// Test soto_list_size with an empty list.
 	ck_assert_uint_eq(soto_list_size_char_ptr(list), 0);
-}
-END_TEST
 
-START_TEST(test_list_size_with_non_empty_list)
-{
-	push_back_values(3, "foo", "bar", "baz");
-	ck_assert_uint_eq(soto_list_size_char_ptr(list), 3);
+	generate_nodes(list);
+
+	// Test soto_list_size with a non-empty list.
+	ck_assert_uint_eq(soto_list_size_char_ptr(list), 4);
 }
 END_TEST
 
 START_TEST(test_list_pop_back)
 {
-	fill_list();
-	size_t old_size = soto_list_size_char_ptr(list);
-	soto_list_pop_back_char_ptr(list);
-	ck_assert_uint_eq(soto_list_size_char_ptr(list), old_size-1);
-	ck_assert_ptr_null(list->back->next);
-}
-END_TEST
+	generate_nodes(list);
 
-START_TEST(test_list_pop_back_with_single_elem_list)
-{
-	soto_list_push_back_char_ptr(list, "Hello world!");
+	// Pop the last node.
 	soto_list_pop_back_char_ptr(list);
-	ck_assert(soto_list_empty_char_ptr(list) == true);
+	test_list_integrity(list);
+	ck_assert_uint_eq(soto_list_size_char_ptr(list), 3);
+
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL1);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL2);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), VAL3);
+
+	// Pop the last node.
+	soto_list_pop_back_char_ptr(list);
+	test_list_integrity(list);
+	ck_assert_uint_eq(soto_list_size_char_ptr(list), 2);
+
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL1);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL2);
+
+	// Pop the last node.
+	soto_list_pop_back_char_ptr(list);
+	test_list_integrity(list);
+	ck_assert_uint_eq(soto_list_size_char_ptr(list), 1);
+
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL1);
+
+	// Pop the last node left.
+	soto_list_pop_back_char_ptr(list);
+	test_list_integrity(list);
+	ck_assert_uint_eq(soto_list_size_char_ptr(list), 0);
 }
 END_TEST
 
 START_TEST(test_list_pop_front)
 {
-	fill_list();
-	size_t old_size = soto_list_size_char_ptr(list);
+	generate_nodes(list);
+
+	// Pop the first node.
 	soto_list_pop_front_char_ptr(list);
-	ck_assert_uint_eq(soto_list_size_char_ptr(list), old_size-1);
-	ck_assert_ptr_null(list->front->prev);
-}
-END_TEST
+	test_list_integrity(list);
+	ck_assert_uint_eq(soto_list_size_char_ptr(list), 3);
 
-START_TEST(test_list_pop_front_with_single_elem_list)
-{
-	soto_list_push_front_char_ptr(list, "Hello world!");
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL2);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL3);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), VAL4);
+
+	// Pop the first node.
 	soto_list_pop_front_char_ptr(list);
-	ck_assert(soto_list_empty_char_ptr(list) == true);
+	test_list_integrity(list);
+	ck_assert_uint_eq(soto_list_size_char_ptr(list), 2);
+
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL3);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL4);
+
+	// Pop the first node.
+	soto_list_pop_front_char_ptr(list);
+	test_list_integrity(list);
+	ck_assert_uint_eq(soto_list_size_char_ptr(list), 1);
+
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL4);
+
+	// Pop the last node left.
+	soto_list_pop_front_char_ptr(list);
+	test_list_integrity(list);
+	ck_assert_uint_eq(soto_list_size_char_ptr(list), 0);
 }
 END_TEST
 
-START_TEST(test_list_find_with_empty_list)
+START_TEST(test_list_find)
 {
+	// Test soto_list_find with an empty list.
 	ck_assert_int_eq(soto_list_find_char_ptr(list, "foo"), -1);
-}
-END_TEST
 
-START_TEST(test_list_find_with_non_existent_value)
-{
-	soto_list_push_front_char_ptr(list, "Hello world!");
-	ck_assert_int_eq(soto_list_find_char_ptr(list, "foo"), -1);
-}
-END_TEST
+	generate_nodes(list);
 
-START_TEST(test_list_find_with_existent_value)
-{
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	ck_assert_int_eq(soto_list_find_char_ptr(list, "baz"), 2);
-}
-END_TEST
+	// Test soto_list_find with non-existent value.
+	ck_assert_int_eq(soto_list_find_char_ptr(list, "???"), -1);
 
-START_TEST(test_list_find_with_doubled_value)
-{
-	push_back_values(4, "foo", "bar", "bar", "qux");
-	ck_assert_int_eq(soto_list_find_char_ptr(list, "bar"), 1);
-}
-END_TEST
+	// Test soto_list_find with existent value.
+	ck_assert_int_eq(soto_list_find_char_ptr(list, VAL2), 1);
 
-START_TEST(test_list_find_with_numeric_value)
-{
+	// Test soto_list_find with doubled value.
+	soto_list_push_front_char_ptr(list, VAL2);
+	ck_assert_int_eq(soto_list_find_char_ptr(list, VAL2), 0);
+
+	// Create a list that stores integers.
 	soto_list_int *list_int = soto_list_create_int();
+
+	// Push some values to the newly created list.
 	soto_list_push_back_int(list_int, 1);
 	soto_list_push_back_int(list_int, 1);
 	soto_list_push_back_int(list_int, 2);
 	soto_list_push_back_int(list_int, 3);
+
+	// Test soto_list_find with a numeric value.
 	ck_assert_int_eq(soto_list_find_int(list_int, 2), 2);
+
 	soto_list_free_int(list_int);
 }
 END_TEST
 
-START_TEST(test_list_node_at_with_empty_list)
+START_TEST(test_list_node_at)
 {
+	// Test soto_list_node_at with an empty list.
 	ck_assert_ptr_null(soto_list_node_at_char_ptr(list, 0));
-}
-END_TEST
 
-START_TEST(test_list_node_at_with_the_first_position)
-{
-	push_back_values(4, "foo", "bar", "baz", "qux");
+	generate_nodes(list);
+
+	// Test soto_list_node_at with the first position.
 	ck_assert_ptr_eq(soto_list_node_at_char_ptr(list, 0), list->front);
-}
-END_TEST
 
-START_TEST(test_list_node_at_with_the_last_position)
-{
-	push_back_values(4, "foo", "bar", "baz", "qux");
+	// Test soto_list_node_at with the last position.
 	ck_assert_ptr_eq(soto_list_node_at_char_ptr(list, 3), list->back);
+
+	// Test soto_list_node_at with the inner position.
+	ck_assert_ptr_eq(soto_list_node_at_char_ptr(list, 2), list->back->prev);
 }
 END_TEST
 
-START_TEST(test_list_node_at_with_the_inner_positon)
+START_TEST(test_list_at)
 {
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	ck_assert_ptr_eq(soto_list_node_at_char_ptr(list, 1),
-		list->front->next);
+	generate_nodes(list);
+
+	// Test soto_list_at with the first position.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL1);
+
+	// Test soto_list_at with the last position.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 3), VAL4);
+
+	// Test soto_list_at with the inner position.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), VAL3);
 }
 END_TEST
 
-START_TEST(test_list_at_with_the_inner_pos)
+START_TEST(test_list_insert)
 {
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), "baz");
-}
-END_TEST
-
-START_TEST(test_list_at_with_the_first_pos)
-{
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), "foo");
-}
-END_TEST
-
-START_TEST(test_list_at_with_the_last_pos)
-{
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	ck_assert_str_eq(soto_list_at_char_ptr(list, 3), "qux");
-}
-END_TEST
-
-START_TEST(test_list_insert_at_the_beginning)
-{
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	char *val = "1337";
-	soto_list_insert_char_ptr(list, 0, val);
+	// Test soto_list_insert with an empty list.
+	soto_list_insert_char_ptr(list, 0, VAL1);
 	test_list_integrity(list);
-	ck_assert_str_eq(list->front->data, val);
-}
-END_TEST
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL1);
+	soto_list_pop_back_char_ptr(list);
 
-START_TEST(test_list_insert_at_the_end)
-{
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	char *val = "1337";
-	soto_list_insert_char_ptr(list, 4, val);
+	generate_nodes(list);
+
+	// Test soto_list_insert at the beginnig.
+	char *val1 = "1337";
+	soto_list_insert_char_ptr(list, 0, val1);
 	test_list_integrity(list);
-	ck_assert_str_eq(list->back->data, val);
-}
-END_TEST
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), val1);
 
-START_TEST(test_list_insert_in_the_middle)
-{
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	char *val = "1337";
-	soto_list_insert_char_ptr(list, 2, val);
+	// Test soto_list_insert at the end.
+	char *val2 = "2020";
+	soto_list_insert_char_ptr(list, soto_list_size_char_ptr(list), val2);
 	test_list_integrity(list);
-	ck_assert_str_eq(list->front->next->next->data, val);
+	ck_assert_str_eq(soto_list_at_char_ptr(
+		list, soto_list_size_char_ptr(list)-1), val2);
+
+	// Test soto_list_insert at the inner position.
+	char *val3 = "0000";
+	soto_list_insert_char_ptr(list, 2, val3);
+	test_list_integrity(list);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), val3);
 }
 END_TEST
 
-START_TEST(test_list_remove_the_first_node)
+START_TEST(test_list_remove)
 {
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	size_t old_size = soto_list_size_char_ptr(list);
+	generate_nodes(list);
+
+	// Test removing the first node.
 	soto_list_remove_char_ptr(list, 0);
-	ck_assert_int_eq(soto_list_size_char_ptr(list), old_size-1);
 	test_list_integrity(list);
-	ck_assert_str_eq(list->front->data, "bar");
-	ck_assert_ptr_null(list->front->prev);
-}
-END_TEST
+	ck_assert_int_eq(soto_list_size_char_ptr(list), 3);
 
-START_TEST(test_list_remove_the_last_node)
-{
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	size_t old_size = soto_list_size_char_ptr(list);
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL2);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL3);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), VAL4);
+
+	soto_list_push_front_char_ptr(list, VAL1);
+
+	// Test removing the last node.
 	soto_list_remove_char_ptr(list, 3);
-	ck_assert_int_eq(soto_list_size_char_ptr(list), old_size-1);
 	test_list_integrity(list);
-	ck_assert_str_eq(list->back->data, "baz");
-}
-END_TEST
+	ck_assert_int_eq(soto_list_size_char_ptr(list), 3);
 
-START_TEST(test_list_remove_the_inner_node)
-{
-	push_back_values(4, "foo", "bar", "baz", "qux");
-	size_t old_size = soto_list_size_char_ptr(list);
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL1);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL2);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), VAL3);
+
+	soto_list_push_back_char_ptr(list, VAL4);
+
+	// Test removing the inner node.
 	soto_list_remove_char_ptr(list, 2);
-	ck_assert_int_eq(soto_list_size_char_ptr(list), old_size-1);
 	test_list_integrity(list);
-	ck_assert_str_eq(list->back->data, "qux");
-	ck_assert_str_eq(list->front->next->data, "bar");
+	ck_assert_int_eq(soto_list_size_char_ptr(list), 3);
 
+	// Test all values in the list.
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 0), VAL1);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL2);
+	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), VAL4);
 }
 END_TEST
 
@@ -339,36 +348,17 @@ Suite * list_suite(void)
 
 	tcase_add_test(tc_core, test_list_create);
 	tcase_add_test(tc_core, test_list_free);
-	tcase_add_test(tc_core, test_list_empty_with_empty_list);
-	tcase_add_test(tc_core, test_list_empty_with_non_empty_list);
-	tcase_add_test(tc_core, test_list_push_back_with_empty_list);
-	tcase_add_test(tc_core, test_list_push_back_with_non_empty_list);
-	tcase_add_test(tc_core, test_list_push_front_with_empty_list);
-	tcase_add_test(tc_core, test_list_push_front_with_non_empty_list);
-	tcase_add_test(tc_core, test_list_size_with_empty_list);
-	tcase_add_test(tc_core, test_list_size_with_non_empty_list);
+	tcase_add_test(tc_core, test_list_empty);
+	tcase_add_test(tc_core, test_list_push_back);
+	tcase_add_test(tc_core, test_list_push_front);
+	tcase_add_test(tc_core, test_list_size);
 	tcase_add_test(tc_core, test_list_pop_back);
-	tcase_add_test(tc_core, test_list_pop_back_with_single_elem_list);
 	tcase_add_test(tc_core, test_list_pop_front);
-	tcase_add_test(tc_core, test_list_pop_front_with_single_elem_list);
-	tcase_add_test(tc_core, test_list_find_with_empty_list);
-	tcase_add_test(tc_core, test_list_find_with_non_existent_value);
-	tcase_add_test(tc_core, test_list_find_with_existent_value);
-	tcase_add_test(tc_core, test_list_find_with_doubled_value);
-	tcase_add_test(tc_core, test_list_find_with_numeric_value);
-	tcase_add_test(tc_core, test_list_node_at_with_empty_list);
-	tcase_add_test(tc_core, test_list_node_at_with_the_first_position);
-	tcase_add_test(tc_core, test_list_node_at_with_the_first_position);
-	tcase_add_test(tc_core, test_list_node_at_with_the_inner_positon);
-	tcase_add_test(tc_core, test_list_at_with_the_inner_pos);
-	tcase_add_test(tc_core, test_list_at_with_the_first_pos);
-	tcase_add_test(tc_core, test_list_at_with_the_last_pos);
-	tcase_add_test(tc_core, test_list_insert_at_the_beginning);
-	tcase_add_test(tc_core, test_list_insert_at_the_end);
-	tcase_add_test(tc_core, test_list_insert_in_the_middle);
-	tcase_add_test(tc_core, test_list_remove_the_first_node);
-	tcase_add_test(tc_core, test_list_remove_the_last_node);
-	tcase_add_test(tc_core, test_list_remove_the_inner_node);
+	tcase_add_test(tc_core, test_list_find);
+	tcase_add_test(tc_core, test_list_node_at);
+	tcase_add_test(tc_core, test_list_at);
+	tcase_add_test(tc_core, test_list_insert);
+	tcase_add_test(tc_core, test_list_remove);
 
 	suite_add_tcase(s, tc_core);
 
