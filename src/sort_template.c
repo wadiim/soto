@@ -4,13 +4,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-void SOTO_TEMPLATE(swap,SOTO_TYPE)(SOTO_TYPE *x, SOTO_TYPE *y)
-{
-	SOTO_TYPE tmp = *x;
-	*x = *y;
-	*y = tmp;
-}
-
 void SOTO_TEMPLATE(soto_bubble_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len,
 	bool (*comp)(SOTO_TYPE x, SOTO_TYPE y))
 {

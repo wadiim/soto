@@ -1,5 +1,6 @@
 #include "soto/soto.h"
 #include "soto/sort.h"
+#include "soto/utils.h"
 
 #ifdef SOTO_TYPE
 #undef SOTO_TYPE
