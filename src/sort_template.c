@@ -11,14 +11,15 @@ void SOTO_TEMPLATE(swap,SOTO_TYPE)(SOTO_TYPE *x, SOTO_TYPE *y)
 	*y = tmp;
 }
 
-void SOTO_TEMPLATE(soto_bubble_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
+void SOTO_TEMPLATE(soto_bubble_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len,
+	bool (*comp)(SOTO_TYPE x, SOTO_TYPE y))
 {
 	for (size_t i = 0; i < len-1; ++i)
 	{
 		bool swapped = false;
 		for (size_t j = 0; j < len-1-i; ++j)
 		{
-			if (arr[j] > arr[j+1])
+			if ((*comp)(arr[j], arr[j+1]))
 			{
 				SOTO_TEMPLATE(swap,SOTO_TYPE)
 					(&arr[j], &arr[j+1]);
@@ -32,14 +33,15 @@ void SOTO_TEMPLATE(soto_bubble_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
 	}
 }
 
-void SOTO_TEMPLATE(soto_selection_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
+void SOTO_TEMPLATE(soto_selection_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len,
+	bool (*comp)(SOTO_TYPE x, SOTO_TYPE y))
 {
 	for (size_t i = 0; i < len-1; ++i)
 	{
 		size_t min_idx = i;
 		for (size_t j = i+1; j < len; ++j)
 		{
-			if (arr[j] < arr[min_idx])
+			if ((*comp)(arr[min_idx], arr[j]))
 			{
 				min_idx = j;
 			}
@@ -48,13 +50,14 @@ void SOTO_TEMPLATE(soto_selection_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
 	}
 }
 
-void SOTO_TEMPLATE(soto_insertion_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
+void SOTO_TEMPLATE(soto_insertion_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len,
+	bool (*comp)(SOTO_TYPE x, SOTO_TYPE y))
 {
 	for (size_t i = 1; i < len; ++i)
 	{
 		SOTO_TYPE key = arr[i];
 		size_t j = i;
-		while (j > 0 && arr[j-1] > key)
+		while (j > 0 && (*comp)(arr[j-1], key))
 		{
 			arr[j] = arr[j-1];
 			--j;
@@ -63,7 +66,8 @@ void SOTO_TEMPLATE(soto_insertion_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
 	}
 }
 
-void SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
+void SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len,
+	bool (*comp)(SOTO_TYPE x, SOTO_TYPE y))
 {
 	if (len <= 1) return;
 	SOTO_TYPE pivot = arr[0];
@@ -72,7 +76,7 @@ void SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
 	size_t i, i1 = 0, i2 = 0;
 	for (i = 1; i < len; ++i)
 	{
-		if (arr[i] <= pivot)
+		if ((*comp)(pivot, arr[i]))
 		{
 			arr1[i1++] = arr[i];
 		}
@@ -81,8 +85,8 @@ void SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len)
 			arr2[i2++] = arr[i];
 		}
 	}
-	SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(arr1, i1);
-	SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(arr2, i2);
+	SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(arr1, i1, comp);
+	SOTO_TEMPLATE(soto_quick_sort,SOTO_TYPE)(arr2, i2, comp);
 	for (i = 0; i < i1; ++i)
 	{
 		arr[i] = arr1[i];
