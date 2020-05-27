@@ -19,3 +19,9 @@
 #endif
 #define SOTO_TYPE double
 #include "sort_template.c"
+
+#ifdef SOTO_TYPE
+#undef SOTO_TYPE
+#endif
+#define SOTO_TYPE char_ptr
+#include "sort_template.c"

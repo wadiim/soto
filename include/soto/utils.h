@@ -21,4 +21,10 @@
 #define SOTO_TYPE double
 #include "utils_template.h"
 
+#ifdef SOTO_TYPE
+#undef SOTO_TYPE
+#endif
+#define SOTO_TYPE char_ptr
+#include "utils_template.h"
+
 #endif // SOTO_UTILS_H
