@@ -44,7 +44,7 @@ void teardown(void)
 START_TEST(test_bubble_sort)
 {
 	soto_bubble_sort_int(arr, ARRSIZE, &soto_greater_int);
-	ck_assert(arr[_i] == sorted[_i]);
+	ck_assert_int_eq(arr[_i], sorted[_i]);
 
 	soto_bubble_sort_char_ptr(strings, ARRSIZE, &soto_greater_char_ptr);
 	ck_assert_str_eq(strings[_i], strings_sorted[_i]);
@@ -54,7 +54,7 @@ END_TEST
 START_TEST(test_selection_sort)
 {
 	soto_selection_sort_int(arr, ARRSIZE, &soto_greater_int);
-	ck_assert(arr[_i] == sorted[_i]);
+	ck_assert_int_eq(arr[_i], sorted[_i]);
 
 	soto_selection_sort_char_ptr(strings, ARRSIZE, &soto_greater_char_ptr);
 	ck_assert_str_eq(strings[_i], strings_sorted[_i]);
@@ -64,7 +64,7 @@ END_TEST
 START_TEST(test_insertion_sort)
 {
 	soto_insertion_sort_int(arr, ARRSIZE, &soto_greater_int);
-	ck_assert(arr[_i] == sorted[_i]);
+	ck_assert_int_eq(arr[_i], sorted[_i]);
 
 	soto_insertion_sort_char_ptr(strings, ARRSIZE, &soto_greater_char_ptr);
 	ck_assert_str_eq(strings[_i], strings_sorted[_i]);
@@ -74,7 +74,7 @@ END_TEST
 START_TEST(test_quick_sort)
 {
 	soto_quick_sort_int(arr, ARRSIZE, &soto_greater_int);
-	ck_assert(arr[_i] == sorted[_i]);
+	ck_assert_int_eq(arr[_i], sorted[_i]);
 
 	soto_quick_sort_char_ptr(strings, ARRSIZE, &soto_greater_char_ptr);
 	ck_assert_str_eq(strings[_i], strings_sorted[_i]);
