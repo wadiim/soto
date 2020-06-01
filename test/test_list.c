@@ -82,6 +82,13 @@ START_TEST(test_list_push_back)
 	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL2);
 	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), VAL3);
 	ck_assert_str_eq(soto_list_at_char_ptr(list, 3), VAL4);
+
+	// Test case where the back pointer is NULL but the list is not empty.
+	soto_list_node_char_ptr *back = list->back;
+	list->back = NULL;
+	ck_assert_int_eq(
+		soto_list_push_back_char_ptr(list, "Hello world!"), -1);
+	list->back = back;
 }
 END_TEST
 

@@ -49,8 +49,9 @@ size_t SOTO_TEMPLATE(soto_list_size,SOTO_TYPE)(
 
 /*
  * Add a node with the specified value to the end.
+ * Return -1 if the back pointer is NULL but the list is not empty, 0 otherwise.
  */
-void SOTO_TEMPLATE(soto_list_push_back,SOTO_TYPE)(
+int SOTO_TEMPLATE(soto_list_push_back,SOTO_TYPE)(
 	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list, SOTO_TYPE value);
 
 /*
