@@ -115,6 +115,13 @@ START_TEST(test_list_push_front)
 	ck_assert_str_eq(soto_list_at_char_ptr(list, 1), VAL3);
 	ck_assert_str_eq(soto_list_at_char_ptr(list, 2), VAL2);
 	ck_assert_str_eq(soto_list_at_char_ptr(list, 3), VAL1);
+
+	// Test case where the front pointer is NULL but the list is not empty.
+	soto_list_node_char_ptr *front = list->front;
+	list->front = NULL;
+	ck_assert_int_eq(
+		soto_list_push_front_char_ptr(list, "Hello world!"), -1);
+	list->front = front;
 }
 END_TEST
 

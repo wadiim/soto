@@ -56,8 +56,10 @@ int SOTO_TEMPLATE(soto_list_push_back,SOTO_TYPE)(
 
 /*
  * Insert a node with the specified value to the beginning.
+ * Return -1 if the front pointer is NULL but the list is not empty,
+ * 0 otherwise.
  */
-void SOTO_TEMPLATE(soto_list_push_front,SOTO_TYPE)(
+int SOTO_TEMPLATE(soto_list_push_front,SOTO_TYPE)(
 	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list, SOTO_TYPE value);
 
 /*

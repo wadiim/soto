@@ -73,9 +73,13 @@ int SOTO_TEMPLATE(soto_list_push_back,SOTO_TYPE)(
 	return 0;
 }
 
-void SOTO_TEMPLATE(soto_list_push_front,SOTO_TYPE)(
+int SOTO_TEMPLATE(soto_list_push_front,SOTO_TYPE)(
 	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list, SOTO_TYPE value)
 {
+	if (list->front == NULL && list->back != NULL)
+	{
+		return -1;
+	}
 	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) *node =
 		malloc(sizeof(SOTO_TEMPLATE(soto_list_node,SOTO_TYPE)));
 	node->data = value;
@@ -90,6 +94,7 @@ void SOTO_TEMPLATE(soto_list_push_front,SOTO_TYPE)(
 		list->front->prev = node;
 		list->front = node;
 	}
+	return 0;
 }
 
 void SOTO_TEMPLATE(soto_list_pop_back,SOTO_TYPE)(
