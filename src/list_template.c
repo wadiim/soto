@@ -119,21 +119,20 @@ void SOTO_TEMPLATE(soto_list_pop_back,SOTO_TYPE)(
 void SOTO_TEMPLATE(soto_list_pop_front,SOTO_TYPE)(
 	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list)
 {
-	if (SOTO_TEMPLATE(soto_list_empty,SOTO_TYPE)(list) == true)
-	{
-		return;
-	}
-	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) *tmp = list->front;
-	list->front = list->front->next;
 	if (list->front != NULL)
 	{
-		list->front->prev = NULL;
+		SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) *tmp = list->front;
+		list->front = list->front->next;
+		if (list->front != NULL)
+		{
+			list->front->prev = NULL;
+		}
+		else
+		{
+			list->back = NULL;
+		}
+		free(tmp);
 	}
-	else
-	{
-		list->back = NULL;
-	}
-	free(tmp);
 }
 
 int SOTO_TEMPLATE(soto_list_find,SOTO_TYPE)(
