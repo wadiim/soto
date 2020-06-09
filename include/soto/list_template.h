@@ -110,4 +110,12 @@ void SOTO_TEMPLATE(soto_list_insert,SOTO_TYPE)(
 void SOTO_TEMPLATE(soto_list_remove,SOTO_TYPE)(
 	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list, size_t pos);
 
+/*
+ * Swap nodes.
+ */
+void SOTO_TEMPLATE(soto_list_swap,SOTO_TYPE)(
+	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list,
+	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) *node1,
+	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) *node2);
+
 #endif // SOTO_TYPE

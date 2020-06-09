@@ -9,6 +9,23 @@
 #include <string.h>
 #endif
 
+static void SOTO_TEMPLATE(swap_node_ptr,SOTO_TYPE)(
+	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) **node1,
+	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) **node2)
+{
+	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) *tmp = *node1;
+	*node1 = *node2;
+	*node2 = tmp;
+}
+
+static bool SOTO_TEMPLATE(are_they_adjacent,SOTO_TYPE)(
+	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) *node1,
+	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) *node2)
+{
+	return (node1->next == node2 && node2->prev == node1 ||
+		node2->next == node1 && node1->prev == node2);
+}
+
 SOTO_TEMPLATE(soto_list,SOTO_TYPE) * SOTO_TEMPLATE(
 	soto_list_create,SOTO_TYPE)(void)
 {
@@ -224,6 +241,72 @@ void SOTO_TEMPLATE(soto_list_remove,SOTO_TYPE)(
 		node->prev->next = node->next;
 		node->next->prev = node->prev;
 		free(node);
+	}
+}
+
+void SOTO_TEMPLATE(soto_list_swap,SOTO_TYPE)(
+	SOTO_TEMPLATE(soto_list,SOTO_TYPE) *list,
+	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) *node1,
+	SOTO_TEMPLATE(soto_list_node,SOTO_TYPE) *node2)
+{
+	if (node1 == NULL || node2 == NULL || node1 == node2)
+	{
+		return;
+	}
+
+	if (node2->next == node1)
+	{
+		SOTO_TEMPLATE(swap_node_ptr,SOTO_TYPE)(&node1, &node2);
+	}
+
+	if (node1->prev != NULL)
+	{
+		node1->prev->next = node2;
+	}
+	if (node2->next != NULL)
+	{
+		node2->next->prev = node1;
+	}
+
+	if (SOTO_TEMPLATE(are_they_adjacent,SOTO_TYPE)(node1, node2))
+	{
+		node1->next = node2->next;
+		node2->prev = node1->prev;
+		node1->prev = node2;
+		node2->next = node1;
+	}
+	else
+	{
+		if (node1->next != NULL)
+		{
+			node1->next->prev = node2;
+		}
+		if (node2->prev != NULL)
+		{
+			node2->prev->next = node1;
+		}
+
+		SOTO_TEMPLATE(swap_node_ptr,SOTO_TYPE)(&node1->prev,
+			&node2->prev);
+		SOTO_TEMPLATE(swap_node_ptr,SOTO_TYPE)(&node1->next,
+			&node2->next);
+	}
+
+	if (list->front == node1)
+	{
+		list->front = node2;
+	}
+	else if (list->front == node2)
+	{
+		list->front = node1;
+	}
+	if (list->back == node1)
+	{
+		list->back = node2;
+	}
+	else if (list->back == node2)
+	{
+		list->back = node1;
 	}
 }
 

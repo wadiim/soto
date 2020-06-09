@@ -1,4 +1,5 @@
 #include <soto/list.h>
+#include <soto/utils.h>
 #include <check.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -8,6 +9,14 @@
 #define VAL2 "bar"
 #define VAL3 "baz"
 #define VAL4 "qux"
+
+#define TEST_LIST_SWAP(list,pos1,pos2,values) \
+	soto_list_swap_char_ptr(list, \
+		soto_list_node_at_char_ptr(list, pos1), \
+		soto_list_node_at_char_ptr(list, pos2)); \
+	test_list_integrity(list); \
+	swap_char_ptr(&values[pos1], &values[pos2]); \
+	ck_assert_str_eq(soto_list_at_char_ptr(list, _i), values[_i]);
 
 soto_list_char_ptr *list;
 
@@ -350,6 +359,45 @@ START_TEST(test_list_remove)
 }
 END_TEST
 
+START_TEST(test_list_swap)
+{
+	generate_nodes(list);
+	generate_nodes(list);
+
+	const size_t LEN = 8;
+	char *values[8] = { VAL1, VAL2, VAL3, VAL4, VAL1, VAL2, VAL3, VAL4 };
+
+	// Test swapping a node with NULL.
+	soto_list_swap_char_ptr(
+		list, soto_list_node_at_char_ptr(list, 4), NULL);
+	test_list_integrity(list);
+
+	// Test swapping a node with itself.
+	TEST_LIST_SWAP(list, 2, 2, values);
+
+	// Test swapping inner, non-adjacent nodes.
+	TEST_LIST_SWAP(list, 1, 3, values);
+
+	// Test swapping inner, adjacent nodes.
+	TEST_LIST_SWAP(list, 5, 6, values);
+
+	// Test swapping adjacent nodes in reverse order.
+	TEST_LIST_SWAP(list, 5, 4, values);
+
+	// Test swapping front with an inner, non-adjacent node.
+	TEST_LIST_SWAP(list, 0, 2, values);
+
+	// Test swapping front with an inner, adjacent node.
+	TEST_LIST_SWAP(list, 0, 1, values);
+
+	// Test swapping back with an inner, non-adjacent node.
+	TEST_LIST_SWAP(list, LEN-1, 3, values);
+
+	// Test swapping back with an inner, adjacent node.
+	TEST_LIST_SWAP(list, LEN-1, LEN-2, values);
+}
+END_TEST
+
 Suite * list_suite(void)
 {
 	Suite *s;
@@ -373,6 +421,7 @@ Suite * list_suite(void)
 	tcase_add_test(tc_core, test_list_at);
 	tcase_add_test(tc_core, test_list_insert);
 	tcase_add_test(tc_core, test_list_remove);
+	tcase_add_loop_test(tc_core, test_list_swap, 0, 8);
 
 	suite_add_tcase(s, tc_core);
 
