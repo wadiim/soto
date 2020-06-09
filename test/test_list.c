@@ -15,7 +15,7 @@
 		soto_list_node_at_char_ptr(list, pos1), \
 		soto_list_node_at_char_ptr(list, pos2)); \
 	test_list_integrity(list); \
-	swap_char_ptr(&values[pos1], &values[pos2]); \
+	soto_swap_char_ptr(&values[pos1], &values[pos2]); \
 	ck_assert_str_eq(soto_list_at_char_ptr(list, _i), values[_i]);
 
 soto_list_char_ptr *list;

@@ -14,7 +14,7 @@ void SOTO_TEMPLATE(soto_bubble_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len,
 		{
 			if ((*comp)(arr[j], arr[j+1]))
 			{
-				SOTO_TEMPLATE(swap,SOTO_TYPE)
+				SOTO_TEMPLATE(soto_swap,SOTO_TYPE)
 					(&arr[j], &arr[j+1]);
 				swapped = true;
 			}
@@ -39,7 +39,7 @@ void SOTO_TEMPLATE(soto_selection_sort,SOTO_TYPE)(SOTO_TYPE arr[], size_t len,
 				min_idx = j;
 			}
 		}
-		SOTO_TEMPLATE(swap,SOTO_TYPE)(&arr[min_idx], &arr[i]);
+		SOTO_TEMPLATE(soto_swap,SOTO_TYPE)(&arr[min_idx], &arr[i]);
 	}
 }
 

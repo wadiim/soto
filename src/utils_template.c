@@ -25,7 +25,7 @@ bool SOTO_TEMPLATE(soto_greater,SOTO_TYPE)(SOTO_TYPE x, SOTO_TYPE y)
 #endif
 }
 
-void SOTO_TEMPLATE(swap,SOTO_TYPE)(SOTO_TYPE *x, SOTO_TYPE *y)
+void SOTO_TEMPLATE(soto_swap,SOTO_TYPE)(SOTO_TYPE *x, SOTO_TYPE *y)
 {
 	SOTO_TYPE tmp = *x;
 	*x = *y;
