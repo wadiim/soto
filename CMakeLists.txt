@@ -12,6 +12,8 @@ add_library(${PROJECT_NAME} STATIC
 	${CMAKE_SOURCE_DIR}/src/list.c
 	${CMAKE_SOURCE_DIR}/src/utils_template.c
 	${CMAKE_SOURCE_DIR}/src/utils.c
+	${CMAKE_SOURCE_DIR}/src/stack_template.c
+	${CMAKE_SOURCE_DIR}/src/stack.c
 )
 
 target_include_directories(${PROJECT_NAME}

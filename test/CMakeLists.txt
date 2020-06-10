@@ -9,7 +9,7 @@ include(CheckLibraryExists)
 include(CheckSymbolExists)
 include(CheckTypeSize)
 
-set(TESTS test_sort test_list)
+set(TESTS test_sort test_list test_stack)
 
 foreach(TEST ${TESTS})
 	add_executable(${TEST} ${TEST}.c)
